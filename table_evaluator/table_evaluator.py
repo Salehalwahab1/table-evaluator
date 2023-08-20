@@ -98,7 +98,7 @@ class TableEvaluator:
         """
         plot_mean_std(self.real, self.fake, fname=fname)
 
-    def plot_cumsums(self, nr_cols=4, fname=None):
+    def plot_cumsums(self, nr_cols=5, fname=None):
         """
         Plot the cumulative sums for all columns in the real and fake dataset. Height of each row scales with the length of the labels. Each plot contains the
         values of a real columns and the corresponding fake column.
