@@ -126,6 +126,8 @@ class TableEvaluator:
                 f = self.fake.iloc[:, self.real.columns.tolist().index(col)]
                 cdf(r, f, col, 'Cumsum', ax=axes[i])
                 axes[i].set_ylabel('')  # This line removes the y-axis title
+                if axes[i].legend_ is not None:  # This checks if a legend exists for the subplot
+                    axes[i].legend_.remove()  # This line removes the legend
             except Exception as e:
                 print(f'Error while plotting column {col}')
                 raise e
@@ -136,6 +138,7 @@ class TableEvaluator:
             plt.savefig(fname)
     
         plt.show()
+
     
     
         def plot_distributions(self, nr_cols=3, fname=None):
