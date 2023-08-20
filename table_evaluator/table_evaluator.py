@@ -120,96 +120,74 @@ class TableEvaluator:
         fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, row_height * nr_rows))
         fig.suptitle('Cumulative Sums per feature', fontsize=16)
         axes = ax.flatten()
-        
-        # Placeholder for the legend handles
-        handles = []
-        
         for i, col in enumerate(self.real.columns):
             try:
                 r = self.real[col]
                 f = self.fake.iloc[:, self.real.columns.tolist().index(col)]
-                
-                # Assuming 'cdf' is a function that plots the cumulative sum. 
-                # We'll collect the legend handles and labels from this function
-                handle = cdf(r, f, col, 'Cumsum', ax=axes[i])
-                if i == 0:
-                    handles.extend(handle)
+                cdf(r, f, col, 'Cumsum', ax=axes[i])
+                axes[i].set_ylabel('')  # This line removes the y-axis title
             except Exception as e:
                 print(f'Error while plotting column {col}')
                 raise e
     
-        # Set a shared y-axis title
-        fig.text(0.04, 0.5, 'Cumsum', va='center', rotation='vertical')
-    
-        # Remove individual legends and add one shared legend
-        for axis in axes:
-            legend = axis.legend_
-            if legend:
-                for handle in legend.legendHandles:
-                    handle.set_visible(False)
-                legend.remove()
-    
-        fig.legend(handles, ['Real', 'Fake'], loc='upper right')
-    
-        plt.tight_layout(rect=[0.04, 0.02, 0.92, 0.98])
-    
-        if fname is not None:
-            plt.savefig(fname)
-    
-        plt.show()
-
-
-
-    def plot_distributions(self, nr_cols=3, fname=None):
-        """
-        Plot the distribution plots for all columns in the real and fake dataset. Height of each row of plots scales with the length of the labels. Each plot
-        contains the values of a real columns and the corresponding fake column.
-        :param fname: If not none, saves the plot with this file name.
-        """
-        nr_charts = len(self.real.columns)
-        nr_rows = max(1, nr_charts // nr_cols)
-        nr_rows = nr_rows + 1 if nr_charts % nr_cols != 0 else nr_rows
-
-        max_len = 0
-        # Increase the length of plots if the labels are long
-        if not self.real.select_dtypes(include=['object']).empty:
-            lengths = []
-            for d in self.real.select_dtypes(include=['object']):
-                lengths.append(max([len(x.strip()) for x in self.real[d].unique().tolist()]))
-            max_len = max(lengths)
-
-        row_height = 6 + (max_len // 30)
-        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, row_height * nr_rows))
-        fig.suptitle('Distribution per feature', fontsize=16)
-        axes = ax.flatten()
-        for i, col in enumerate(self.real.columns):
-            if col not in self.categorical_columns:
-                plot_df = pd.DataFrame({col: pd.concat([self.real[col], self.fake[col]], axis=0), 'kind': ['real'] * self.n_samples + ['fake'] * self.n_samples})
-                fig = sns.histplot(plot_df, x=col, hue='kind', ax=axes[i], stat='probability', legend=True, kde=True)
-                axes[i].set_autoscaley_on(True)
-            else:
-                real = self.real.copy()
-                fake = self.fake.copy()
-                real['kind'] = 'Real'
-                fake['kind'] = 'Fake'
-                concat = pd.concat([fake, real])
-                palette = sns.color_palette(
-                    [(0.8666666666666667, 0.5176470588235295, 0.3215686274509804),
-                     (0.2980392156862745, 0.4470588235294118, 0.6901960784313725)])
-                x, y, hue = col, "proportion", "kind"
-                ax = (concat[x]
-                      .groupby(concat[hue])
-                      .value_counts(normalize=True)
-                      .rename(y)
-                      .reset_index()
-                      .pipe((sns.barplot, "data"), x=x, y=y, hue=hue, ax=axes[i], saturation=0.8, palette=palette))
-                ax.set_xticklabels(axes[i].get_xticklabels(), rotation='vertical')
         plt.tight_layout(rect=[0, 0.02, 1, 0.98])
-
+    
         if fname is not None:
             plt.savefig(fname)
-
+    
         plt.show()
+    
+    
+        def plot_distributions(self, nr_cols=3, fname=None):
+            """
+            Plot the distribution plots for all columns in the real and fake dataset. Height of each row of plots scales with the length of the labels. Each plot
+            contains the values of a real columns and the corresponding fake column.
+            :param fname: If not none, saves the plot with this file name.
+            """
+            nr_charts = len(self.real.columns)
+            nr_rows = max(1, nr_charts // nr_cols)
+            nr_rows = nr_rows + 1 if nr_charts % nr_cols != 0 else nr_rows
+    
+            max_len = 0
+            # Increase the length of plots if the labels are long
+            if not self.real.select_dtypes(include=['object']).empty:
+                lengths = []
+                for d in self.real.select_dtypes(include=['object']):
+                    lengths.append(max([len(x.strip()) for x in self.real[d].unique().tolist()]))
+                max_len = max(lengths)
+    
+            row_height = 6 + (max_len // 30)
+            fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, row_height * nr_rows))
+            fig.suptitle('Distribution per feature', fontsize=16)
+            axes = ax.flatten()
+            for i, col in enumerate(self.real.columns):
+                if col not in self.categorical_columns:
+                    plot_df = pd.DataFrame({col: pd.concat([self.real[col], self.fake[col]], axis=0), 'kind': ['real'] * self.n_samples + ['fake'] * self.n_samples})
+                    fig = sns.histplot(plot_df, x=col, hue='kind', ax=axes[i], stat='probability', legend=True, kde=True)
+                    axes[i].set_autoscaley_on(True)
+                else:
+                    real = self.real.copy()
+                    fake = self.fake.copy()
+                    real['kind'] = 'Real'
+                    fake['kind'] = 'Fake'
+                    concat = pd.concat([fake, real])
+                    palette = sns.color_palette(
+                        [(0.8666666666666667, 0.5176470588235295, 0.3215686274509804),
+                         (0.2980392156862745, 0.4470588235294118, 0.6901960784313725)])
+                    x, y, hue = col, "proportion", "kind"
+                    ax = (concat[x]
+                          .groupby(concat[hue])
+                          .value_counts(normalize=True)
+                          .rename(y)
+                          .reset_index()
+                          .pipe((sns.barplot, "data"), x=x, y=y, hue=hue, ax=axes[i], saturation=0.8, palette=palette))
+                    ax.set_xticklabels(axes[i].get_xticklabels(), rotation='vertical')
+            plt.tight_layout(rect=[0, 0.02, 1, 0.98])
+    
+            if fname is not None:
+                plt.savefig(fname)
+    
+            plt.show()
 
     def plot_correlation_difference(self, plot_diff=True, fname=None, **kwargs):
         """
