@@ -98,16 +98,17 @@ class TableEvaluator:
         """
         plot_mean_std(self.real, self.fake, fname=fname)
 
-    def plot_cumsums(self, nr_cols=5, fname=None):
+    def plot_cumsums(self, fname=None):
         """
-        Plot the cumulative sums for all columns in the real and fake dataset. Height of each row scales with the length of the labels. Each plot contains the
-        values of a real columns and the corresponding fake column.
+        Plot the cumulative sums for all columns in the real and fake dataset in a more square-like arrangement.
         :param fname: If not none, saves the plot with this file name.
         """
         nr_charts = len(self.real.columns)
-        nr_rows = max(1, nr_charts // nr_cols)
-        nr_rows = nr_rows + 1 if nr_charts % nr_cols != 0 else nr_rows
-    
+        
+        # Calculate the optimal number of rows and columns for a square arrangement
+        nr_cols = int(np.ceil(np.sqrt(nr_charts)))
+        nr_rows = int(np.ceil(nr_charts / nr_cols))
+        
         max_len = 0
         # Increase the length of plots if the labels are long
         if not self.real.select_dtypes(include=['object']).empty:
@@ -117,9 +118,15 @@ class TableEvaluator:
             max_len = max(lengths)
     
         row_height = 6 + (max_len // 30)
-        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, row_height * nr_rows))
+        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(row_height * nr_cols, row_height * nr_rows))
         fig.suptitle('Cumulative Sums per feature', fontsize=16)
-        axes = ax.flatten()
+        
+        # If nr_charts is not a perfect square, some subplots might remain empty. 
+        # To handle this, we flatten the axes array and remove the extra subplots.
+        axes = ax.ravel()
+        for i in range(nr_charts, nr_rows * nr_cols):
+            fig.delaxes(axes[i])
+    
         for i, col in enumerate(self.real.columns):
             try:
                 r = self.real[col]
