@@ -102,14 +102,14 @@ class TableEvaluator:
         nr_charts = len(self.real.columns)
         nr_rows = max(1, nr_charts // nr_cols)
         nr_rows = nr_rows + 1 if nr_charts % nr_cols != 0 else nr_rows
-
+    
         max_len = 0
         if not self.real.select_dtypes(include=['object']).empty:
             lengths = []
             for d in self.real.select_dtypes(include=['object']):
                 lengths.append(max([len(x.strip()) for x in self.real[d].unique().tolist()]))
             max_len = max(lengths)
-
+    
         row_height = 6 + (max_len // 30)
         fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, row_height * nr_rows))
         fig.suptitle('Cumulative Sums per feature', fontsize=16)
@@ -122,18 +122,20 @@ class TableEvaluator:
             except Exception as e:
                 print(f'Error while plotting column {col}')
                 raise e
-
+    
         # Adding shared y-label and legend
-        fig.text(0.04, 0.5, 'Cumulative Sum', va='center', rotation='vertical', fontsize=14)
+        fig.text(0.01, 0.5, 'Cumulative Sum', va='center', rotation='vertical', fontsize=14)
         handles, labels = axes[0].get_legend_handles_labels()
         fig.legend(handles, labels, loc='upper right')
-
-        plt.tight_layout(rect=[0, 0.04, 1, 0.98])
-
+    
+        # Adjust the layout
+        plt.tight_layout(rect=[0.04, 0.04, 0.96, 0.96])
+    
         if fname is not None:
             plt.savefig(fname)
-
+    
         plt.show()
+
     
         
         def plot_distributions(self, nr_cols=3, fname=None):
