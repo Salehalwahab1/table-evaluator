@@ -107,7 +107,7 @@ class TableEvaluator:
         nr_charts = len(self.real.columns)
         nr_rows = max(1, nr_charts // nr_cols)
         nr_rows = nr_rows + 1 if nr_charts % nr_cols != 0 else nr_rows
-
+    
         max_len = 0
         # Increase the length of plots if the labels are long
         if not self.real.select_dtypes(include=['object']).empty:
@@ -115,25 +115,34 @@ class TableEvaluator:
             for d in self.real.select_dtypes(include=['object']):
                 lengths.append(max([len(x.strip()) for x in self.real[d].unique().tolist()]))
             max_len = max(lengths)
-
+    
         row_height = 6 + (max_len // 30)
         fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, row_height * nr_rows))
-        fig.suptitle('Cumulative Sums per feature', fontsize=16)
+        fig.suptitle('Cumulative Sums per feature', fontsize=16, y=1.02)
+    
+        # Shared y-axis title
+        fig.text(0.04, 0.5, 'Cumulative Sum', va='center', rotation='vertical')
+    
         axes = ax.flatten()
+        lines, labels = None, None
         for i, col in enumerate(self.real.columns):
             try:
                 r = self.real[col]
                 f = self.fake.iloc[:, self.real.columns.tolist().index(col)]
-                cdf(r, f, col, 'Cumsum', ax=axes[i])
+                l, la = cdf(r, f, col, 'Cumsum', ax=axes[i])  # Assuming cdf returns line handles and labels for the legend.
+                lines, labels = l if lines is None else lines + l, la if labels is None else labels + la
             except Exception as e:
                 print(f'Error while plotting column {col}')
                 raise e
-
-        plt.tight_layout(rect=[0, 0.02, 1, 0.98])
-
+    
+        plt.tight_layout(rect=[0.06, 0.02, 1, 0.98])
+    
+        # Shared legend
+        fig.legend(lines, labels, loc='center right')
+    
         if fname is not None:
             plt.savefig(fname)
-
+    
         plt.show()
 
     def plot_distributions(self, nr_cols=3, fname=None):
