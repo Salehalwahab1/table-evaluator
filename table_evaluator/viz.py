@@ -139,16 +139,7 @@ def plot_correlation_comparison(evaluators: List, annot=False):
     return None
 
 
-def cdf(data_r, data_f, xlabel: str = 'Values', ylabel: str = 'Cumulative Sum', ax=None):
-    """
-    Plot continous density function on optionally given ax. If no ax, cdf is plotted and shown.
-
-    :param data_r: Series with real data
-    :param data_f: Series with fake data
-    :param xlabel: Label to put on the x-axis
-    :param ylabel: Label to put  on the y-axis
-    :param ax: The axis to plot on. If ax=None, a new figure is created.
-    """
+def cdf(data_r, data_f, xlabel: str = 'Values', ax=None):
     x1 = data_r.sort_values()
     x2 = data_f.sort_values()
     y = np.arange(1, len(data_r) + 1) / len(data_r)
@@ -157,23 +148,19 @@ def cdf(data_r, data_f, xlabel: str = 'Values', ylabel: str = 'Cumulative Sum', 
 
     axis_font = {'size': '14'}
     ax.set_xlabel(xlabel, **axis_font)
-    ax.set_ylabel(ylabel, **axis_font)
-
     ax.grid()
-    l_real, = ax.plot(x1, y, marker='o', linestyle='none', label='Real', ms=8)
-    l_fake, = ax.plot(x2, y, marker='o', linestyle='none', label='Fake', alpha=0.5)
+    ax.plot(x1, y, marker='o', linestyle='none', label='Real', ms=8)
+    ax.plot(x2, y, marker='o', linestyle='none', label='Fake', alpha=0.5)
     ax.tick_params(axis='both', which='major', labelsize=8)
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.1), ncol=3)
-    import matplotlib.ticker as mticker
-
-    # If labels are strings, rotate them vertical
+    
     if isinstance(data_r, pd.Series) and data_r.dtypes == 'object':
         all_labels = set(data_r) | set(data_f)
         ticks_loc = ax.get_xticks()
         ax.xaxis.set_major_locator(mticker.FixedLocator(ticks_loc))
         ax.set_xticklabels(sorted(all_labels), rotation='vertical')
 
-    return l_real, l_fake
+    if ax is None:
+        plt.show()
 
 
 def plot_mean_std_comparison(evaluators: List):
