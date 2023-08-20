@@ -160,8 +160,8 @@ def cdf(data_r, data_f, xlabel: str = 'Values', ylabel: str = 'Cumulative Sum', 
     ax.set_ylabel(ylabel, **axis_font)
 
     ax.grid()
-    ax.plot(x1, y, marker='o', linestyle='none', label='Real', ms=8)
-    ax.plot(x2, y, marker='o', linestyle='none', label='Fake', alpha=0.5)
+    l_real, = ax.plot(x1, y, marker='o', linestyle='none', label='Real', ms=8)
+    l_fake, = ax.plot(x2, y, marker='o', linestyle='none', label='Fake', alpha=0.5)
     ax.tick_params(axis='both', which='major', labelsize=8)
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.1), ncol=3)
     import matplotlib.ticker as mticker
@@ -173,8 +173,7 @@ def cdf(data_r, data_f, xlabel: str = 'Values', ylabel: str = 'Cumulative Sum', 
         ax.xaxis.set_major_locator(mticker.FixedLocator(ticks_loc))
         ax.set_xticklabels(sorted(all_labels), rotation='vertical')
 
-    if ax is None:
-        plt.show()
+    return l_real, l_fake
 
 
 def plot_mean_std_comparison(evaluators: List):
