@@ -100,10 +100,9 @@ class TableEvaluator:
 
     def plot_cumsums(self, nr_cols=4, fname=None):
         """
-        Plot the cumulative sums for all columns in the real and fake dataset. 
-        Height of each row scales with the length of the labels. Each plot contains the values of a real column 
-        and the corresponding fake column.
-        :param fname: If not None, saves the plot with this file name.
+        Plot the cumulative sums for all columns in the real and fake dataset. Height of each row scales with the length of the labels. Each plot contains the
+        values of a real columns and the corresponding fake column.
+        :param fname: If not none, saves the plot with this file name.
         """
         nr_charts = len(self.real.columns)
         nr_rows = max(1, nr_charts // nr_cols)
@@ -118,34 +117,47 @@ class TableEvaluator:
             max_len = max(lengths)
     
         row_height = 6 + (max_len // 30)
-        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, row_height * nr_rows), sharey=True)
+        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, row_height * nr_rows))
         fig.suptitle('Cumulative Sums per feature', fontsize=16)
         axes = ax.flatten()
-    
-        # Assume that the legend labels are 'Real' and 'Fake' in cdf function
+        
+        # Placeholder for the legend handles
+        handles = []
+        
         for i, col in enumerate(self.real.columns):
             try:
                 r = self.real[col]
                 f = self.fake.iloc[:, self.real.columns.tolist().index(col)]
-                cdf(r, f, col, 'Cumsum', ax=axes[i], legend=False)  # Make sure your cdf function can accept and handle a `legend` argument
+                
+                # Assuming 'cdf' is a function that plots the cumulative sum. 
+                # We'll collect the legend handles and labels from this function
+                handle = cdf(r, f, col, 'Cumsum', ax=axes[i])
+                if i == 0:
+                    handles.extend(handle)
             except Exception as e:
                 print(f'Error while plotting column {col}')
                 raise e
     
-        # Set shared y-axis title
-        fig.text(0.04, 0.5, 'Cumulative sum', va='center', rotation='vertical', fontsize=12)
+        # Set a shared y-axis title
+        fig.text(0.04, 0.5, 'Cumsum', va='center', rotation='vertical')
     
-        # Creating a shared legend (assuming line colors or styles differ between real and fake)
-        lines_labels = [ax.get_legend_handles_labels() for ax in fig.axes]
-        handles, labels = [sum(lol, []) for lol in zip(*lines_labels)]
-        fig.legend(handles[:2], labels[:2], loc='upper right')
+        # Remove individual legends and add one shared legend
+        for axis in axes:
+            legend = axis.legend_
+            if legend:
+                for handle in legend.legendHandles:
+                    handle.set_visible(False)
+                legend.remove()
     
-        plt.tight_layout(rect=[0, 0.02, 1, 0.98])
+        fig.legend(handles, ['Real', 'Fake'], loc='upper right')
+    
+        plt.tight_layout(rect=[0.04, 0.02, 0.92, 0.98])
     
         if fname is not None:
             plt.savefig(fname)
     
         plt.show()
+
 
 
     def plot_distributions(self, nr_cols=3, fname=None):
