@@ -98,17 +98,16 @@ class TableEvaluator:
         """
         plot_mean_std(self.real, self.fake, fname=fname)
 
-    def plot_cumsums(self, fname=None):
+    def plot_cumsums(self, nr_cols=4, fname=None):
         """
-        Plot the cumulative sums for all columns in the real and fake dataset in a more square-like arrangement with larger text.
+        Plot the cumulative sums for all columns in the real and fake dataset. Height of each row scales with the length of the labels. Each plot contains the
+        values of a real columns and the corresponding fake column.
         :param fname: If not none, saves the plot with this file name.
         """
         nr_charts = len(self.real.columns)
-        
-        # Calculate the optimal number of rows and columns for a square arrangement
-        nr_cols = int(np.ceil(np.sqrt(nr_charts)))
-        nr_rows = int(np.ceil(nr_charts / nr_cols))
-        
+        nr_rows = max(1, nr_charts // nr_cols)
+        nr_rows = nr_rows + 1 if nr_charts % nr_cols != 0 else nr_rows
+    
         max_len = 0
         # Increase the length of plots if the labels are long
         if not self.real.select_dtypes(include=['object']).empty:
@@ -118,30 +117,29 @@ class TableEvaluator:
             max_len = max(lengths)
     
         row_height = 6 + (max_len // 30)
-        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(row_height * nr_cols, row_height * nr_rows))
-        fig.suptitle('Cumulative Sums per feature', fontsize=26)  # Increase main title font size
-        
-        # If nr_charts is not a perfect square, some subplots might remain empty. 
-        # To handle this, we flatten the axes array and remove the extra subplots.
-        axes = ax.ravel()
-        for i in range(nr_charts, nr_rows * nr_cols):
-            fig.delaxes(axes[i])
+        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, row_height * nr_rows))
+        fig.suptitle('Cumulative Sums per feature', fontsize=16)
+        axes = ax.flatten()
+        lines = []  # To collect lines for legend
+        labels = []  # To collect labels for legend
     
         for i, col in enumerate(self.real.columns):
             try:
                 r = self.real[col]
                 f = self.fake.iloc[:, self.real.columns.tolist().index(col)]
-                cdf(r, f, col, 'Cumsum', ax=axes[i])
-                axes[i].set_ylabel('')  # This line removes the y-axis title
-                axes[i].tick_params(axis='both', labelsize=26)  # Increase tick label font size
-                axes[i].set_title(col, fontsize=26)  # Increase subplot title font size
-                if axes[i].legend_ is not None:  # This checks if a legend exists for the subplot
-                    for text in axes[i].legend_.get_texts():
-                        text.set_fontsize(26)  # Increase legend font size
-                    axes[i].legend_.remove()  # This line removes the legend
+                l_real, l_fake = cdf(r, f, col, 'Cumsum', ax=axes[i])
+                if i == 0:  # Only take the lines and labels from the first subplot for the legend
+                    lines.extend([l_real, l_fake])
+                    labels.extend(["Real", "Fake"])
             except Exception as e:
                 print(f'Error while plotting column {col}')
                 raise e
+    
+        # Add shared y-axis title
+        fig.text(0.04, 0.5, 'Cumulative Sum', va='center', rotation='vertical', fontsize=14)
+    
+        # Add shared legend using lines and labels from the first subplot
+        fig.legend(handles=lines, labels=labels, loc='upper right')
     
         plt.tight_layout(rect=[0, 0.02, 1, 0.98])
     
