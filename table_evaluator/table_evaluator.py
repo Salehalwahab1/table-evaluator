@@ -98,7 +98,7 @@ class TableEvaluator:
         """
         plot_mean_std(self.real, self.fake, fname=fname)
 
-    def plot_cumsums_square_large_text(self, fname=None):
+    def plot_cumsums(self, fname=None):
         """
         Plot the cumulative sums for all columns in the real and fake dataset in a more square-like arrangement with larger text.
         :param fname: If not none, saves the plot with this file name.
