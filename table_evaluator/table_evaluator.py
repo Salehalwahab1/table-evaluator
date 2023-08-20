@@ -99,53 +99,40 @@ class TableEvaluator:
         plot_mean_std(self.real, self.fake, fname=fname)
 
     def plot_cumsums(self, nr_cols=4, fname=None):
-        """
-        Plot the cumulative sums for all columns in the real and fake dataset. Height of each row scales with the length of the labels. Each plot contains the
-        values of a real columns and the corresponding fake column.
-        :param fname: If not none, saves the plot with this file name.
-        """
         nr_charts = len(self.real.columns)
         nr_rows = max(1, nr_charts // nr_cols)
         nr_rows = nr_rows + 1 if nr_charts % nr_cols != 0 else nr_rows
-    
+
         max_len = 0
-        # Increase the length of plots if the labels are long
         if not self.real.select_dtypes(include=['object']).empty:
             lengths = []
             for d in self.real.select_dtypes(include=['object']):
                 lengths.append(max([len(x.strip()) for x in self.real[d].unique().tolist()]))
             max_len = max(lengths)
-    
+
         row_height = 6 + (max_len // 30)
         fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, row_height * nr_rows))
         fig.suptitle('Cumulative Sums per feature', fontsize=16)
         axes = ax.flatten()
-        lines = []  # To collect lines for legend
-        labels = []  # To collect labels for legend
-    
         for i, col in enumerate(self.real.columns):
             try:
                 r = self.real[col]
                 f = self.fake.iloc[:, self.real.columns.tolist().index(col)]
-                l_real, l_fake = cdf(r, f, col, 'Cumsum', ax=axes[i])
-                if i == 0:  # Only take the lines and labels from the first subplot for the legend
-                    lines.extend([l_real, l_fake])
-                    labels.extend(["Real", "Fake"])
+                cdf(r, f, col, ax=axes[i])
             except Exception as e:
                 print(f'Error while plotting column {col}')
                 raise e
-    
-        # Add shared y-axis title
+
+        # Adding shared y-label and legend
         fig.text(0.04, 0.5, 'Cumulative Sum', va='center', rotation='vertical', fontsize=14)
-    
-        # Add shared legend using lines and labels from the first subplot
-        fig.legend(handles=lines, labels=labels, loc='upper right')
-    
-        plt.tight_layout(rect=[0, 0.02, 1, 0.98])
-    
+        handles, labels = axes[0].get_legend_handles_labels()
+        fig.legend(handles, labels, loc='upper right')
+
+        plt.tight_layout(rect=[0, 0.04, 1, 0.98])
+
         if fname is not None:
             plt.savefig(fname)
-    
+
         plt.show()
     
         
