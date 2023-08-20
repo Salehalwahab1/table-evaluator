@@ -120,11 +120,16 @@ class TableEvaluator:
         fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, row_height * nr_rows))
         fig.suptitle('Cumulative Sums per feature', fontsize=16)
         axes = ax.flatten()
+    
+        handles, labels = [], []
         for i, col in enumerate(self.real.columns):
             try:
                 r = self.real[col]
                 f = self.fake.iloc[:, self.real.columns.tolist().index(col)]
-                cdf(r, f, col, 'Cumsum', ax=axes[i])
+                # Assuming cdf returns handles and labels for the lines it plots
+                h, l = cdf(r, f, col, 'Cumsum', ax=axes[i])
+                handles.extend(h)
+                labels.extend(l)
                 axes[i].set_ylabel('')  # This line removes the y-axis title
                 if axes[i].legend_ is not None:  # This checks if a legend exists for the subplot
                     axes[i].legend_.remove()  # This line removes the legend
@@ -132,14 +137,19 @@ class TableEvaluator:
                 print(f'Error while plotting column {col}')
                 raise e
     
+        # Set central y-axis title
+        fig.text(0.04, 0.5, 'Cumulative sum', va='center', rotation='vertical', fontsize=12)
+    
+        # Add a single legend at the top right
+        # This assumes the two unique labels are "Real" and "Fake"
+        fig.legend(handles[:2], labels[:2], loc='upper right')
+    
         plt.tight_layout(rect=[0, 0.02, 1, 0.98])
     
         if fname is not None:
             plt.savefig(fname)
     
         plt.show()
-
-    
     
         def plot_distributions(self, nr_cols=3, fname=None):
             """
