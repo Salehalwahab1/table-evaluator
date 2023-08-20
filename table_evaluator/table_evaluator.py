@@ -110,9 +110,9 @@ class TableEvaluator:
                 lengths.append(max([len(x.strip()) for x in self.real[d].unique().tolist()]))
             max_len = max(lengths)
     
-        row_height = 6 + (max_len // 30)
-        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, row_height * nr_rows))
-        fig.suptitle('Cumulative Sums per feature', fontsize=16)
+        # Making each subplot square by setting both width and height to 8
+        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(8 * nr_cols, 8 * nr_rows))
+        fig.suptitle('Cumulative Sums per feature', fontsize=26)
         axes = ax.flatten()
         for i, col in enumerate(self.real.columns):
             try:
@@ -123,13 +123,13 @@ class TableEvaluator:
                 print(f'Error while plotting column {col}')
                 raise e
     
-        # Adding shared y-label and legend
-        fig.text(0.01, 0.5, 'Cumulative Sum', va='center', rotation='vertical', fontsize=14)
+        # Adding shared y-label and legend with font size 26
+        fig.text(0.01, 0.5, 'Cumulative Sum', va='center', rotation='vertical', fontsize=26)
         handles, labels = axes[0].get_legend_handles_labels()
-        fig.legend(handles, labels, loc='upper right')
+        fig.legend(handles, labels, loc='upper right', fontsize=26)
     
         # Adjust the layout
-        plt.tight_layout(rect=[0.04, 0.04, 0.96, 0.96])
+        plt.tight_layout(rect=[0.06, 0.06, 0.94, 0.94])
     
         if fname is not None:
             plt.savefig(fname)
