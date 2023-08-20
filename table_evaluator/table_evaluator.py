@@ -119,7 +119,7 @@ class TableEvaluator:
     
         row_height = 6 + (max_len // 30)
         fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(row_height * nr_cols, row_height * nr_rows))
-        fig.suptitle('Cumulative Sums per feature', fontsize=20)  # Increase main title font size
+        fig.suptitle('Cumulative Sums per feature', fontsize=26)  # Increase main title font size
         
         # If nr_charts is not a perfect square, some subplots might remain empty. 
         # To handle this, we flatten the axes array and remove the extra subplots.
@@ -133,11 +133,11 @@ class TableEvaluator:
                 f = self.fake.iloc[:, self.real.columns.tolist().index(col)]
                 cdf(r, f, col, 'Cumsum', ax=axes[i])
                 axes[i].set_ylabel('')  # This line removes the y-axis title
-                axes[i].tick_params(axis='both', labelsize=14)  # Increase tick label font size
-                axes[i].set_title(col, fontsize=16)  # Increase subplot title font size
+                axes[i].tick_params(axis='both', labelsize=26)  # Increase tick label font size
+                axes[i].set_title(col, fontsize=26)  # Increase subplot title font size
                 if axes[i].legend_ is not None:  # This checks if a legend exists for the subplot
                     for text in axes[i].legend_.get_texts():
-                        text.set_fontsize(14)  # Increase legend font size
+                        text.set_fontsize(26)  # Increase legend font size
                     axes[i].legend_.remove()  # This line removes the legend
             except Exception as e:
                 print(f'Error while plotting column {col}')
