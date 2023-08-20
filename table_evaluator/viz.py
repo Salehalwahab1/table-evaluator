@@ -146,18 +146,17 @@ def cdf(data_r, data_f, xlabel: str = 'Values', ax=None):
 
     ax = ax if ax else plt.subplots()[1]
 
-    axis_font = {'size': '14'}
-    ax.set_xlabel(xlabel, **axis_font)
+    ax.set_xlabel(xlabel, fontsize=26)
     ax.grid()
     ax.plot(x1, y, marker='o', linestyle='none', label='Real', ms=8)
     ax.plot(x2, y, marker='o', linestyle='none', label='Fake', alpha=0.5)
-    ax.tick_params(axis='both', which='major', labelsize=8)
+    ax.tick_params(axis='both', which='major', labelsize=26)
     
     if isinstance(data_r, pd.Series) and data_r.dtypes == 'object':
         all_labels = set(data_r) | set(data_f)
         ticks_loc = ax.get_xticks()
         ax.xaxis.set_major_locator(mticker.FixedLocator(ticks_loc))
-        ax.set_xticklabels(sorted(all_labels), rotation='vertical')
+        ax.set_xticklabels(sorted(all_labels), rotation='vertical', fontsize=26)
 
     if ax is None:
         plt.show()
