@@ -133,7 +133,7 @@ def plot_correlation_comparison(evaluators: List, annot=False):
         flat_ax[i].set_xticklabels([])
         flat_ax[i + nr_plots].set_yticklabels([])
         flat_ax[i + nr_plots].set_xticklabels([])
-        title_font = {'size': '12'}
+        title_font = {'size': '22'}
         flat_ax[i].set_title(label, **title_font)
     plt.tight_layout()
     return None
@@ -154,7 +154,7 @@ def cdf(data_r, data_f, xlabel: str = 'Values', ax=None):
     ax.grid()
     ax.plot(x1, y, marker='o', linestyle='none', label='Real', ms=8)
     ax.plot(x2, y, marker='o', linestyle='none', label='Generated', alpha=0.5)
-    ax.tick_params(axis='both', which='major', labelsize=12)
+    ax.tick_params(axis='both', which='major', labelsize=22)
 
     # If labels are strings, rotate them vertical
     if isinstance(data_r, pd.Series) and data_r.dtypes == 'object':
