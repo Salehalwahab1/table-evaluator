@@ -112,7 +112,7 @@ class TableEvaluator:
         fig_height = nr_rows * subplot_size
     
         fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(fig_width, fig_height))
-        fig.suptitle('Cumulative Sums per feature', fontsize=22)
+        fig.suptitle('Cumulative Sums per feature', fontsize=24)
     
         # Create a custom legend at top right
         from matplotlib.lines import Line2D
