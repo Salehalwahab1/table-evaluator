@@ -112,7 +112,7 @@ class TableEvaluator:
         fig_height = nr_rows * subplot_size
     
         fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(fig_width, fig_height))
-        fig.suptitle('Cumulative Sums per feature', fontsize=16)
+        fig.suptitle('Cumulative Sums per feature', fontsize=22)
     
         # Create a custom legend at top right
         from matplotlib.lines import Line2D
@@ -121,7 +121,7 @@ class TableEvaluator:
         fig.legend(custom_lines, ['Real', 'Generated'], loc='upper right', ncol=2)
     
         # Add centralized y-label with more space to the left to prevent overlap
-        fig.text(0.01, 0.5, 'Cumulative sum', va='center', rotation='vertical', fontsize=12)
+        fig.text(0.01, 0.5, 'Cumulative sum', va='center', rotation='vertical', fontsize=22)
     
         axes = ax.flatten()
         for i, col in enumerate(self.real.columns):
