@@ -83,7 +83,7 @@ def plot_correlation_difference(real: pd.DataFrame, fake: pd.DataFrame, plot_dif
 
     titles = ['Real', 'Fake', 'Difference'] if plot_diff else ['Real', 'Fake']
     for i, label in enumerate(titles):
-        title_font = {'size': '18'}
+        title_font = {'size': '12'}
         ax[i].set_title(label, **title_font)
     plt.tight_layout()
 
@@ -133,33 +133,42 @@ def plot_correlation_comparison(evaluators: List, annot=False):
         flat_ax[i].set_xticklabels([])
         flat_ax[i + nr_plots].set_yticklabels([])
         flat_ax[i + nr_plots].set_xticklabels([])
-        title_font = {'size': '28'}
+        title_font = {'size': '12'}
         flat_ax[i].set_title(label, **title_font)
     plt.tight_layout()
     return None
 
+
+import numpy as np
+import pandas as pd
+import matplotlib.ticker as mticker
+import matplotlib.pyplot as plt
 
 def cdf(data_r, data_f, xlabel: str = 'Values', ax=None):
     x1 = data_r.sort_values()
     x2 = data_f.sort_values()
     y = np.arange(1, len(data_r) + 1) / len(data_r)
 
-    ax = ax if ax else plt.subplots()[1]
+    if ax is None:
+        _, ax = plt.subplots()
 
-    ax.set_xlabel(xlabel, fontsize=26)
+    ax.set_xlabel(xlabel, fontsize=12)
     ax.grid()
     ax.plot(x1, y, marker='o', linestyle='none', label='Real', ms=8)
-    ax.plot(x2, y, marker='o', linestyle='none', label='Fake', alpha=0.5)
+    ax.plot(x2, y, marker='o', linestyle='none', label='Generated', alpha=0.5)
     ax.tick_params(axis='both', which='major', labelsize=26)
     
     if isinstance(data_r, pd.Series) and data_r.dtypes == 'object':
         all_labels = set(data_r) | set(data_f)
         ticks_loc = ax.get_xticks()
         ax.xaxis.set_major_locator(mticker.FixedLocator(ticks_loc))
-        ax.set_xticklabels(sorted(all_labels), rotation='vertical', fontsize=26)
+        ax.set_xticklabels(sorted(all_labels), rotation='vertical', fontsize=12)
+    
+    ax.legend(loc="upper right")  # This line places the legend at the top right
 
     if ax is None:
         plt.show()
+
 
 
 def plot_mean_std_comparison(evaluators: List):
@@ -176,7 +185,7 @@ def plot_mean_std_comparison(evaluators: List):
 
     titles = [e.name if e is not None else idx for idx, e in enumerate(evaluators)]
     for i, label in enumerate(titles):
-        title_font = {'size': '24'}
+        title_font = {'size': '12'}
         flat_ax[i].set_title(label, **title_font)
     plt.tight_layout()
 
@@ -192,7 +201,7 @@ def plot_mean_std(real: pd.DataFrame, fake: pd.DataFrame, ax=None, fname=None):
     """
     if ax is None:
         fig, ax = plt.subplots(1, 2, figsize=(10, 5))
-        fig.suptitle('Absolute Log Mean and STDs of numeric data\n', fontsize=16)
+        fig.suptitle('Absolute Log Mean and STDs of numeric data\n', fontsize=12)
 
     ax[0].grid(True)
     ax[1].grid(True)
