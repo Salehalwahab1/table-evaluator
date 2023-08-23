@@ -118,7 +118,8 @@ class TableEvaluator:
         from matplotlib.lines import Line2D
         custom_lines = [Line2D([0], [0], color='blue', lw=2, marker='o', linestyle='none'),
                         Line2D([0], [0], color='orange', lw=2, marker='o', linestyle='none', alpha=0.5)]
-        fig.legend(custom_lines, ['Real', 'Generated'], loc='upper right', ncol=2)
+        fig.legend(custom_lines, ['Real', 'Generated'], loc='upper right', ncol=2, fontsize=22)
+
     
         # Add centralized y-label with more space to the left to prevent overlap
         fig.text(0.01, 0.5, 'Cumulative sum', va='center', rotation='vertical', fontsize=22)
