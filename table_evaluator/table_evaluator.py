@@ -99,6 +99,9 @@ class TableEvaluator:
         plot_mean_std(self.real, self.fake, fname=fname)
 
     def plot_cumsums(self, nr_cols=4, fname=None):
+        """
+        Plot the cumulative sums for all columns in the real and fake dataset.
+        """
         nr_charts = len(self.real.columns)
         nr_rows = max(1, nr_charts // nr_cols)
         nr_rows = nr_rows + 1 if nr_charts % nr_cols != 0 else nr_rows
@@ -111,16 +114,24 @@ class TableEvaluator:
                 lengths.append(max([len(x.strip()) for x in self.real[d].unique().tolist()]))
             max_len = max(lengths)
     
-        # Calculate subplot dimensions for square plots
-        subplot_dim = max(4, 6 + (max_len // 30))
-        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(subplot_dim * nr_cols, subplot_dim * nr_rows))
+        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, 16))
         fig.suptitle('Cumulative Sums per feature', fontsize=16)
+    
+        # Create a custom legend at top right
+        from matplotlib.lines import Line2D
+        custom_lines = [Line2D([0], [0], color='blue', lw=2, marker='o', linestyle='none'),
+                        Line2D([0], [0], color='orange', lw=2, marker='o', linestyle='none', alpha=0.5)]
+        fig.legend(custom_lines, ['Real', 'Generated'], loc='upper right', ncol=2)
+    
+        # Add centralized y-label
+        fig.text(0.04, 0.5, 'Cumulative sum', va='center', rotation='vertical', fontsize=12)
+    
         axes = ax.flatten()
         for i, col in enumerate(self.real.columns):
             try:
                 r = self.real[col]
                 f = self.fake.iloc[:, self.real.columns.tolist().index(col)]
-                cdf(r, f, col, 'Cumsum', ax=axes[i])
+                cdf(r, f, col, ax=axes[i])
             except Exception as e:
                 print(f'Error while plotting column {col}')
                 raise e
