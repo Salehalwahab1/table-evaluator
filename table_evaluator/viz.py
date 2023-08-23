@@ -138,21 +138,9 @@ def plot_correlation_comparison(evaluators: List, annot=False):
     plt.tight_layout()
     return None
 
-
-import numpy as np
-import pandas as pd
-import matplotlib.ticker as mticker
-import matplotlib.pyplot as plt
-
-def cdf(data_r, data_f, xlabel: str = 'Values', ylabel: str = 'Cumulative Sum', ax=None):
+def cdf(data_r, data_f, xlabel: str = 'Values', ax=None):
     """
     Plot continous density function on optionally given ax. If no ax, cdf is plotted and shown.
-
-    :param data_r: Series with real data
-    :param data_f: Series with fake data
-    :param xlabel: Label to put on the x-axis
-    :param ylabel: Label to put  on the y-axis
-    :param ax: The axis to plot on. If ax=None, a new figure is created.
     """
     x1 = data_r.sort_values()
     x2 = data_f.sort_values()
@@ -162,14 +150,11 @@ def cdf(data_r, data_f, xlabel: str = 'Values', ylabel: str = 'Cumulative Sum', 
 
     axis_font = {'size': '12'}
     ax.set_xlabel(xlabel, **axis_font)
-    ax.set_ylabel(ylabel, **axis_font)
 
     ax.grid()
     ax.plot(x1, y, marker='o', linestyle='none', label='Real', ms=8)
     ax.plot(x2, y, marker='o', linestyle='none', label='Generated', alpha=0.5)
     ax.tick_params(axis='both', which='major', labelsize=12)
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.1), ncol=3)
-    import matplotlib.ticker as mticker
 
     # If labels are strings, rotate them vertical
     if isinstance(data_r, pd.Series) and data_r.dtypes == 'object':
@@ -180,7 +165,6 @@ def cdf(data_r, data_f, xlabel: str = 'Values', ylabel: str = 'Cumulative Sum', 
 
     if ax is None:
         plt.show()
-
 
 
 def plot_mean_std_comparison(evaluators: List):
