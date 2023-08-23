@@ -148,7 +148,7 @@ def cdf(data_r, data_f, xlabel: str = 'Values', ax=None):
 
     ax = ax if ax else plt.subplots()[1]
 
-    axis_font = {'size': '12'}
+    axis_font = {'size': '22'}
     ax.set_xlabel(xlabel, **axis_font)
 
     ax.grid()
