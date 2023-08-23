@@ -118,7 +118,7 @@ class TableEvaluator:
 
         row_height = 6 + (max_len // 30)
         fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, row_height * nr_rows))
-        fig.suptitle('Cumulative Sums per feature', fontsize=16)
+        fig.suptitle('Cumulative Sums per feature', fontsize=22)
         axes = ax.flatten()
         for i, col in enumerate(self.real.columns):
             try:
