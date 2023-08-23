@@ -106,15 +106,12 @@ class TableEvaluator:
         nr_rows = max(1, nr_charts // nr_cols)
         nr_rows = nr_rows + 1 if nr_charts % nr_cols != 0 else nr_rows
     
-        max_len = 0
-        # Increase the length of plots if the labels are long
-        if not self.real.select_dtypes(include=['object']).empty:
-            lengths = []
-            for d in self.real.select_dtypes(include=['object']):
-                lengths.append(max([len(x.strip()) for x in self.real[d].unique().tolist()]))
-            max_len = max(lengths)
+        # Determine the size of each subplot to ensure they are square
+        subplot_size = 4
+        fig_width = nr_cols * subplot_size
+        fig_height = nr_rows * subplot_size
     
-        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, 16))
+        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(fig_width, fig_height))
         fig.suptitle('Cumulative Sums per feature', fontsize=16)
     
         # Create a custom legend at top right
@@ -123,8 +120,8 @@ class TableEvaluator:
                         Line2D([0], [0], color='orange', lw=2, marker='o', linestyle='none', alpha=0.5)]
         fig.legend(custom_lines, ['Real', 'Generated'], loc='upper right', ncol=2)
     
-        # Add centralized y-label
-        fig.text(0.04, 0.5, 'Cumulative sum', va='center', rotation='vertical', fontsize=12)
+        # Add centralized y-label with more space to the left to prevent overlap
+        fig.text(0.01, 0.5, 'Cumulative sum', va='center', rotation='vertical', fontsize=12)
     
         axes = ax.flatten()
         for i, col in enumerate(self.real.columns):
@@ -136,12 +133,14 @@ class TableEvaluator:
                 print(f'Error while plotting column {col}')
                 raise e
     
-        plt.tight_layout(rect=[0, 0.02, 1, 0.98])
+        # Adjust the tight layout to give more space on the left
+        plt.tight_layout(rect=[0.05, 0.02, 1, 0.98])
     
         if fname is not None:
             plt.savefig(fname)
     
         plt.show()
+
 
     
         
