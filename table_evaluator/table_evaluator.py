@@ -99,41 +99,41 @@ class TableEvaluator:
         plot_mean_std(self.real, self.fake, fname=fname)
 
     def plot_cumsums(self, nr_cols=4, fname=None):
+        """
+        Plot the cumulative sums for all columns in the real and fake dataset. Height of each row scales with the length of the labels. Each plot contains the
+        values of a real columns and the corresponding fake column.
+        :param fname: If not none, saves the plot with this file name.
+        """
         nr_charts = len(self.real.columns)
         nr_rows = max(1, nr_charts // nr_cols)
         nr_rows = nr_rows + 1 if nr_charts % nr_cols != 0 else nr_rows
-    
+
         max_len = 0
+        # Increase the length of plots if the labels are long
         if not self.real.select_dtypes(include=['object']).empty:
             lengths = []
             for d in self.real.select_dtypes(include=['object']):
                 lengths.append(max([len(x.strip()) for x in self.real[d].unique().tolist()]))
             max_len = max(lengths)
-    
-        # Making each subplot square by setting both width and height to 8
-        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(8 * nr_cols, 8 * nr_rows))
-        fig.suptitle('Cumulative Sums per feature', fontsize=26)
+
+        row_height = 6 + (max_len // 30)
+        fig, ax = plt.subplots(nr_rows, nr_cols, figsize=(16, row_height * nr_rows))
+        fig.suptitle('Cumulative Sums per feature', fontsize=16)
         axes = ax.flatten()
         for i, col in enumerate(self.real.columns):
             try:
                 r = self.real[col]
                 f = self.fake.iloc[:, self.real.columns.tolist().index(col)]
-                cdf(r, f, col, ax=axes[i])
+                cdf(r, f, col, 'Cumsum', ax=axes[i])
             except Exception as e:
                 print(f'Error while plotting column {col}')
                 raise e
-    
-        # Adding shared y-label and legend with font size 26
-        fig.text(0.01, 0.5, 'Cumulative Sum', va='center', rotation='vertical', fontsize=26)
-        handles, labels = axes[0].get_legend_handles_labels()
-        fig.legend(handles, labels, loc='upper right', fontsize=26)
-    
-        # Adjust the layout
-        plt.tight_layout(rect=[0.06, 0.06, 0.94, 0.94])
-    
+
+        plt.tight_layout(rect=[0, 0.02, 1, 0.98])
+
         if fname is not None:
             plt.savefig(fname)
-    
+
         plt.show()
 
     
