@@ -122,7 +122,7 @@ class TableEvaluator:
 
     
         # Add centralized y-label with more space to the left to prevent overlap
-        fig.text(0.01, 0.5, 'Cumulative sum', va='center', rotation='vertical', fontsize=22)
+        fig.text(0.01, 0.5, 'Cumulative sum', va='center', rotation='vertical', fontsize=24)
     
         axes = ax.flatten()
         for i, col in enumerate(self.real.columns):
