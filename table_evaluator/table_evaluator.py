@@ -119,10 +119,12 @@ class TableEvaluator:
         custom_lines = [Line2D([0], [0], color='blue', lw=2, marker='o', linestyle='none'),
                         Line2D([0], [0], color='orange', lw=2, marker='o', linestyle='none', alpha=0.5)]
         fig.legend(custom_lines, ['Real', 'Generated'], loc='upper right', ncol=2, fontsize=22)
-
     
         # Add centralized y-label with more space to the left to prevent overlap
         fig.text(0.01, 0.5, 'Cumulative sum', va='center', rotation='vertical', fontsize=24)
+        
+        # Add shared x-title at the bottom center
+        fig.text(0.5, 0.01, 'Data points', ha='center', fontsize=24)
     
         axes = ax.flatten()
         for i, col in enumerate(self.real.columns):
