@@ -551,7 +551,7 @@ class TableEvaluator:
                 GaussianNB(),
                 RandomForestClassifier(n_estimators=10, random_state=42),
                 MLPClassifier([50, 50], solver='adam', activation='relu', learning_rate='adaptive', random_state=42),
-                GradientBoostingClassifier(n_estimators=20, random_state=seed, verbose=2),
+                GradientBoostingClassifier(n_estimators=20, random_state=42, verbose=2),
                 xgb.XGBClassifier(),
                 lgb.LGBMClassifier()
             ]
