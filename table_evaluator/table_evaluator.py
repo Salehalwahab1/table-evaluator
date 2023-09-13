@@ -19,6 +19,8 @@ from sklearn.metrics import f1_score, jaccard_score, mean_squared_error, accurac
 from sklearn.model_selection import KFold
 from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
+import xgboost as xgb
+import lightgbm as lgb
 from tqdm import tqdm
 
 from .metrics import *
@@ -543,10 +545,12 @@ class TableEvaluator:
             ]
         elif target_type == 'class':
             self.estimators = [
-                LogisticRegression(multi_class='auto', solver='lbfgs', max_iter=500, random_state=42),
+                #LogisticRegression(multi_class='auto', solver='lbfgs', max_iter=500, random_state=42),
                 RandomForestClassifier(n_estimators=10, random_state=42),
                 DecisionTreeClassifier(random_state=42),
                 MLPClassifier([50, 50], solver='adam', activation='relu', learning_rate='adaptive', random_state=42),
+                XGBClassifier(),
+                LGBMClassifier()
             ]
         else:
             raise ValueError(f'target_type must be \'regr\' or \'class\'')
