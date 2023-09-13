@@ -547,11 +547,11 @@ class TableEvaluator:
         elif target_type == 'class':
             self.estimators = [
                 #LogisticRegression(multi_class='auto', solver='lbfgs', max_iter=500, random_state=42),
-                DecisionTreeClassifier(random_state=42),
+                DecisionTreeClassifier(random_state=7),
                 GaussianNB(),
-                RandomForestClassifier(n_estimators=10, random_state=42),
-                MLPClassifier([50, 50], solver='adam', activation='relu', learning_rate='adaptive', random_state=42),
-                GradientBoostingClassifier(n_estimators=20, random_state=42, verbose=2),
+                RandomForestClassifier(n_estimators=10, random_state=7),
+                MLPClassifier([50, 50], solver='adam', activation='relu', learning_rate='adaptive', random_state=7),
+                GradientBoostingClassifier(n_estimators=20, random_state=7, verbose=2),
                 xgb.XGBClassifier(),
                 lgb.LGBMClassifier()
             ]
