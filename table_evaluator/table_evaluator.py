@@ -15,7 +15,7 @@ from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.linear_model import ElasticNet, Lasso, LogisticRegression, Ridge
-from sklearn.metrics import f1_score, jaccard_score, mean_squared_error
+from sklearn.metrics import f1_score, jaccard_score, mean_squared_error, accuracy_score, roc_auc_score
 from sklearn.model_selection import KFold
 from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -361,9 +361,18 @@ class TableEvaluator:
                     predictions_classifier_fake = f_classifier.predict(dataset)
                     f1_r = f1_score(target, predictions_classifier_real, average='micro')
                     f1_f = f1_score(target, predictions_classifier_fake, average='micro')
+                    acc_r = accuracy_score(target, predictions_classifier_real)
+                    acc_f = accuracy_score(target, predictions_classifier_fake)
+                    roc_auc_r = roc_auc_score(target, r_classifier.predict_proba(dataset)[:, 1], multi_class='ovr') if target.nunique() > 2 else roc_auc_score(target, r_classifier.predict_proba(dataset)[:, 1])
+                    roc_auc_f = roc_auc_score(target, f_classifier.predict_proba(dataset)[:, 1], multi_class='ovr') if target.nunique() > 2 else roc_auc_score(target, f_classifier.predict_proba(dataset)[:, 1])
+
                     jac_sim = jaccard_score(predictions_classifier_real, predictions_classifier_fake, average='micro')
-                    row = {'index': f'{estimator_name}_{dataset_name}', 'f1_real': f1_r, 'f1_fake': f1_f,
-                           'jaccard_similarity': jac_sim}
+                    row = {'index': f'{estimator_name}_{dataset_name}',
+                          'f1_real': f1_r, 'f1_fake': f1_f,
+                          'jaccard_similarity': jac_sim,
+                          'accuracy_real': acc_r, 'accuracy_fake': acc_f,
+                          'roc_auc_real': roc_auc_r, 'roc_auc_fake': roc_auc_f}
+
                     rows.append(row)
             results = pd.DataFrame(rows).set_index('index')
 
