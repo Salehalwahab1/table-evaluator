@@ -12,7 +12,8 @@ from dython.nominal import associations, numerical_encoding
 from scipy import stats
 from scipy.spatial.distance import cdist
 from sklearn.decomposition import PCA
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor, GradientBoostingClassifier
+from sklearn.naive_bayes import GaussianNB
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.linear_model import ElasticNet, Lasso, LogisticRegression, Ridge
 from sklearn.metrics import f1_score, jaccard_score, mean_squared_error, accuracy_score, roc_auc_score
@@ -546,11 +547,13 @@ class TableEvaluator:
         elif target_type == 'class':
             self.estimators = [
                 #LogisticRegression(multi_class='auto', solver='lbfgs', max_iter=500, random_state=42),
-                RandomForestClassifier(n_estimators=10, random_state=42),
                 DecisionTreeClassifier(random_state=42),
+                GaussianNB(),
+                RandomForestClassifier(n_estimators=10, random_state=42),
                 MLPClassifier([50, 50], solver='adam', activation='relu', learning_rate='adaptive', random_state=42),
-                XGBClassifier(),
-                LGBMClassifier()
+                GradientBoostingClassifier(n_estimators=20, random_state=seed, verbose=2),
+                xgb.XGBClassifier(),
+                lgb.LGBMClassifier()
             ]
         else:
             raise ValueError(f'target_type must be \'regr\' or \'class\'')
