@@ -134,7 +134,22 @@ class TableEvaluator:
             try:
                 r = self.real[col]
                 f = self.fake.iloc[:, self.real.columns.tolist().index(col)]
-                cdf(r, f, col, ax=axes[i])
+                # Plotting with new colors, edgecolors, and edge widths
+                axes[i].plot(r.cumsum(), color='#1f77b4', marker='o', linestyle='none', 
+                             markeredgecolor='black', markeredgewidth=0.5)
+                axes[i].plot(f.cumsum(), color='#ff7f0e', marker='o', linestyle='none', 
+                             markeredgecolor='black', markeredgewidth=0.5, alpha=0.5)
+                
+                # Remove right and top spines for cleaner look
+                axes[i].spines['right'].set_visible(False)
+                axes[i].spines['top'].set_visible(False)
+                
+                # Adjust x and y tick label font size
+                axes[i].tick_params(axis='both', labelsize=10)
+    
+                # Set title for each subplot
+                axes[i].set_title(col, fontsize=12)
+                
             except Exception as e:
                 print(f'Error while plotting column {col}')
                 raise e
@@ -146,12 +161,7 @@ class TableEvaluator:
             plt.savefig(fname)
     
         plt.show()
-        fig.savefig("comparison_chart.eps", format='eps', dpi=50)
 
-
-
-    
-        
         def plot_distributions(self, nr_cols=3, fname=None):
             """
             Plot the distribution plots for all columns in the real and fake dataset. Height of each row of plots scales with the length of the labels. Each plot
