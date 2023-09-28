@@ -127,7 +127,7 @@ class TableEvaluator:
         fig.text(0.01, 0.5, 'Cumulative sum', va='center', rotation='vertical', fontsize=20)  # adjusted fontsize
     
         # Add shared x-title at the bottom center
-        fig.text(0.5, 0.01, 'Data points', ha='center', fontsize=12)  # adjusted fontsize
+        fig.text(0.5, 0.01, 'Data points', ha='center', fontsize=24)  # adjusted fontsize
     
         axes = ax.flatten()
         for i, col in enumerate(self.real.columns):
@@ -141,7 +141,7 @@ class TableEvaluator:
                 axes[i].spines['right'].set_visible(False)
     
                 # Adjusting the x and y ticks font size
-                axes[i].tick_params(axis='both', which='major', labelsize=14)  # adjusted labelsize
+                axes[i].tick_params(axis='both', which='major', labelsize=24)  # adjusted labelsize
     
             except Exception as e:
                 print(f'Error while plotting column {col}')
