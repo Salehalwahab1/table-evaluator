@@ -83,7 +83,7 @@ def plot_correlation_difference(real: pd.DataFrame, fake: pd.DataFrame, plot_dif
 
     titles = ['Real', 'Fake', 'Difference'] if plot_diff else ['Real', 'Fake']
     for i, label in enumerate(titles):
-        title_font = {'size': '12'}
+        title_font = {'size': '16'}
         ax[i].set_title(label, **title_font)
     plt.tight_layout()
 
