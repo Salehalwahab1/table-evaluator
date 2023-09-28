@@ -153,7 +153,7 @@ def cdf(data_r, data_f, xlabel: str = 'Values', ax=None):
 
     ax.grid()
     ax.plot(x1, y, marker='o', color='lightblue', linestyle='none', label='Real', ms=8)
-    ax.plot(x2, y, marker='o', linestyle='none', color='lightpink', label='Generated', alpha=0.5)
+    ax.plot(x2, y, marker='o', linestyle='none', color='lightcoral', label='Generated', alpha=0.5)
     ax.tick_params(axis='both', which='major', labelsize=12)
 
     # If labels are strings, rotate them vertical
