@@ -146,7 +146,7 @@ class TableEvaluator:
             plt.savefig(fname)
     
         plt.show()
-        fig.savefig("comparison_chart.eps", format='eps', dpi='figure')
+        fig.savefig("comparison_chart.eps", format='eps', dpi=50)
 
 
 
