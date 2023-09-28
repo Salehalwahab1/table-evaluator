@@ -120,14 +120,14 @@ class TableEvaluator:
         # Create a custom legend at top right
         from matplotlib.lines import Line2D
         custom_lines = [Line2D([0], [0], color='lightblue', lw=2, marker='o', linestyle='none', markeredgecolor='black', markeredgewidth=0.5),
-                        Line2D([0], [0], color='lightpink', lw=2, marker='o', linestyle='none', markeredgecolor='black', markeredgewidth=0.5, alpha=0.5)]
+                        Line2D([0], [0], color='lightcoral', lw=2, marker='o', linestyle='none', markeredgecolor='black', markeredgewidth=0.5, alpha=0.5)]
         fig.legend(custom_lines, ['Real', 'Generated'], loc='upper right', ncol=2, fontsize=22)
     
         # Add centralized y-label with more space to the left to prevent overlap
         fig.text(0.01, 0.5, 'Cumulative sum', va='center', rotation='vertical', fontsize=20)  # adjusted fontsize
     
         # Add shared x-title at the bottom center
-        fig.text(0.5, 0.01, 'Data points', ha='center', fontsize=20)  # adjusted fontsize
+        fig.text(0.5, 0.01, 'Data points', ha='center', fontsize=12)  # adjusted fontsize
     
         axes = ax.flatten()
         for i, col in enumerate(self.real.columns):
