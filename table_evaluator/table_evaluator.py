@@ -135,7 +135,8 @@ class TableEvaluator:
                 return f'{x:,.0f}'
             else:
                 return f'{x:.0f}'
-    
+                
+        from matplotlib.ticker import FuncFormatter
         formatter = FuncFormatter(thousands_format)
     
         axes = ax.flatten()
