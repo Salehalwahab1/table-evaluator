@@ -152,7 +152,7 @@ class TableEvaluator:
                 axes[i].spines['right'].set_visible(False)
     
                 # Adjusting the x and y ticks font size
-                axes[i].tick_params(axis='both', which='major', labelsize=14) 
+                axes[i].tick_params(axis='both', which='major', labelsize=12) 
     
                 # Applying the thousands format function to x and y axes
                 axes[i].xaxis.set_major_formatter(formatter)
