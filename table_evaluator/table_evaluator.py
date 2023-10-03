@@ -127,32 +127,47 @@ class TableEvaluator:
         fig.text(0.01, 0.5, 'Cumulative sum', va='center', rotation='vertical', fontsize=20)  # adjusted fontsize
     
         # Add shared x-title at the bottom center
-        fig.text(0.5, 0.01, 'Data points', ha='center', fontsize=24)  # adjusted fontsize
+        fig.text(0.5, 0.01, 'Data points', ha='center', fontsize=12)  # adjusted fontsize
+        
+        def thousands_format(x, pos):
+            'The two args are the value and tick position'
+            if x >= 10000:
+                return f'{x:,.0f}'
+            else:
+                return f'{x:.0f}'
+    
+        formatter = FuncFormatter(thousands_format)
     
         axes = ax.flatten()
         for i, col in enumerate(self.real.columns):
             try:
                 r = self.real[col]
                 f = self.fake.iloc[:, self.real.columns.tolist().index(col)]
-                cdf(r, f, col, ax=axes[i])
+                # Assuming cdf is a function defined elsewhere in your code
+                cdf(r, f, col, ax=axes[i])  
                 
                 # Omit top and right lines of the box
                 axes[i].spines['top'].set_visible(False)
                 axes[i].spines['right'].set_visible(False)
     
                 # Adjusting the x and y ticks font size
-                axes[i].tick_params(axis='both', which='major', labelsize=24)  # adjusted labelsize
+                axes[i].tick_params(axis='both', which='major', labelsize=14) 
     
+                # Applying the thousands format function to x and y axes
+                axes[i].xaxis.set_major_formatter(formatter)
+                axes[i].yaxis.set_major_formatter(formatter)
+        
             except Exception as e:
                 print(f'Error while plotting column {col}')
                 raise e
+        
+        # [the rest of your code remains unchanged]
     
-        # Adjust the tight layout to give more space on the left
         plt.tight_layout(rect=[0.05, 0.02, 1, 0.98])
-    
+        
         if fname is not None:
             plt.savefig(fname)
-    
+        
         plt.show()
 
         def plot_distributions(self, nr_cols=3, fname=None):
